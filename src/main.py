@@ -56,4 +56,4 @@ async def panel_balance(ctx):
 async def test(ctx, msg: str):
     await ctx.response.send_message(f"Testing to see if I come on! {msg}")
 
-bot.run("MTIxMDM4NTY3NDg1NTkwNzQwOA.Ge4-O3.fYwKoF5S8tSr4d6kVz_hVHcyovfAPcKdPut3Ak")
+bot.run("")
