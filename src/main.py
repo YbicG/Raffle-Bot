@@ -7,6 +7,7 @@ import time
 import traceback
 import package_loader
 import views
+import os
 
 colors = package_loader.import_("utilities").libs.colors
 bot = cmd.Bot(command_prefix="!", intents=discord.Intents.all())
@@ -55,4 +56,4 @@ async def panel_balance(ctx):
 async def test(ctx, msg: str):
     await ctx.response.send_message(f"Testing to see if I come on! {msg}")
 
-bot.run("")
+bot.run("MTIxMDM4NTY3NDg1NTkwNzQwOA.Ge4-O3.fYwKoF5S8tSr4d6kVz_hVHcyovfAPcKdPut3Ak")
