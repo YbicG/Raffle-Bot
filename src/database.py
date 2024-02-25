@@ -1,4 +1,5 @@
 import json
+import Google
 
 class FileType():
     balance = "balance"
@@ -20,13 +21,26 @@ class Bucket():
             else:
                 return "", False
 
-    def get_list(self):
-        with open(f"Discord Bots\\Raffle Bot\\Database\\{self.file_type}.json") as file:
-            data = file.read()
-            json_data = json.loads(data)
-            file.close()
+    def get_list(self, id: int = None):
+        if id:
+            id = str(id)
+            with open(f"Discord Bots\\Raffle Bot\\Database\\{self.file_type}.json") as file:
+                data = file.read()
+                json_data = json.loads(data)
+                file.close()
             
-        return json_data
+            if id in json_data:
+                return json_data[id]
+            else:   
+                return None
+        else:
+            with open(f"Discord Bots\\Raffle Bot\\Database\\{self.file_type}.json") as file:
+                data = file.read()
+                json_data = json.loads(data)
+                file.close()
+                
+            return json_data
+            
     
     def set_value(self, key, value):
         key = str(key)
@@ -67,38 +81,45 @@ class Bucket():
                 file.write(json_data)
                 file.close()
 
-def check_taken(username):
-    bucket = Bucket(FileType.roblox_accounts)
-    usernames = bucket.get_list()
+class RobloxClient():
+    def __init__(self) -> None:
+        pass
+    
+    @staticmethod
+    def check_taken(username):
+        bucket = Bucket(FileType.roblox_accounts)
+        usernames = bucket.get_list()
 
-    for user in usernames:
-        if usernames[user] == username:
-            return True, user
+        for user in usernames:
+            if usernames[user] == username:
+                return True, user
+        
+        return False, None
     
-    return False, None
+    @staticmethod
+    def get_roblox_username(discord_id):
+        bucket = Bucket(FileType.roblox_accounts)
+        
+        username, exists = bucket.get_value(discord_id)
+        
+        if exists:
+            return username
+        else:
+            return None 
 
-def get_roblox_username(discord_id):
-    bucket = Bucket(FileType.roblox_accounts)
-    
-    username, exists = bucket.get_value(discord_id)
-    
-    if exists:
-        return username
-    else:
-        return None
-
-def set_roblox_username(discord_id, roblox_username):
-    is_taken, by_id = check_taken(roblox_username)
-    
-    if is_taken:
-        return False, by_id
-    
-    bucket = Bucket(FileType.roblox_accounts)
-    
-    bucket.set_value(discord_id, roblox_username)
-    
-    bucket = Bucket(FileType.balance)
-    
-    bucket.manage_value(discord_id, "roblox_username", roblox_username)
-    
-    return True, None
+    @staticmethod
+    def set_roblox_username(discord_id, roblox_username):
+        is_taken, by_id = RobloxClient.check_taken(roblox_username)
+        
+        if is_taken:
+            return False, by_id
+        
+        bucket = Bucket(FileType.roblox_accounts)
+        
+        bucket.set_value(discord_id, roblox_username)
+        
+        bucket = Bucket(FileType.balance)
+        
+        bucket.manage_value(discord_id, "roblox_username", roblox_username)
+        
+        return True, None
